@@ -37,11 +37,14 @@ const PotholeCard: React.FC<PotholeCardProps> = ({
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
   
+  // Ensure the pothole has an image, if not, provide a default
+  const potholeImage = pothole.image || "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?q=80&w=1000";
+  
   return (
     <div className={`card max-w-md mx-auto overflow-hidden ${className}`}>
       <div className="relative h-64 bg-gray-200">
         <img 
-          src={pothole.image} 
+          src={potholeImage} 
           alt="Pothole" 
           className="w-full h-full object-cover"
         />

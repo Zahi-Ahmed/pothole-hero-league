@@ -69,8 +69,8 @@ const About: React.FC = () => {
               
               <div className="order-first md:order-last">
                 <img 
-                  src="https://images.unsplash.com/photo-1568332980775-dd2547d1e790?q=80&w=1000" 
-                  alt="Team meeting" 
+                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1000" 
+                  alt="Team building technology" 
                   className="rounded-2xl shadow-lg"
                 />
               </div>
