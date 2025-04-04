@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
 import { dummyUsers } from '@/lib/dummyData';
-import Badge from '@/components/UI/Badge';
-import { Award, TrendingUp, Flag, CheckCircle, Tool } from 'lucide-react';
+import CustomBadge from '@/components/UI/CustomBadge';
+import { Award, TrendingUp, Flag, CheckCircle, Hammer } from 'lucide-react';
 
 const Leaderboard: React.FC = () => {
   const [leaderboardType, setLeaderboardType] = useState<'xp' | 'reports' | 'verifications' | 'fixes'>('xp');
@@ -82,7 +82,7 @@ const Leaderboard: React.FC = () => {
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
               >
-                <Tool size={18} />
+                <Hammer size={18} />
                 <span>Fixes</span>
               </button>
             </div>
@@ -157,7 +157,7 @@ const Leaderboard: React.FC = () => {
                   
                   <div className="flex flex-wrap gap-2 justify-center mb-4">
                     {user.badges.slice(0, 3).map((badge) => (
-                      <Badge 
+                      <CustomBadge 
                         key={badge.id} 
                         text={badge.name} 
                         icon={badge.icon} 

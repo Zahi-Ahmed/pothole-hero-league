@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Pothole } from '@/lib/types';
-import Badge from './Badge';
+import CustomBadge from './CustomBadge';
 import { MapPin, MessageCircle, ThumbsUp, Calendar } from 'lucide-react';
 
 interface PotholeCardProps {
@@ -46,11 +46,11 @@ const PotholeCard: React.FC<PotholeCardProps> = ({
           className="w-full h-full object-cover"
         />
         <div className="absolute top-4 right-4 flex gap-2">
-          <Badge 
+          <CustomBadge 
             text={statusText[pothole.status]} 
             variant={pothole.status === 'fixed' ? 'secondary' : pothole.status === 'in-progress' ? 'accent' : 'primary'} 
           />
-          <Badge 
+          <CustomBadge 
             text={pothole.severity.charAt(0).toUpperCase() + pothole.severity.slice(1)} 
             variant={severityColor[pothole.severity] as any} 
           />

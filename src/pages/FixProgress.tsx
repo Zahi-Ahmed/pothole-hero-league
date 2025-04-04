@@ -2,7 +2,7 @@
 import React from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
-import Badge from '@/components/UI/Badge';
+import CustomBadge from '@/components/UI/CustomBadge';
 import { dummyPotholes } from '@/lib/dummyData';
 import { Calendar, Clock, ArrowRight, CheckCircle, AlertCircle, RefreshCw, User, MessageCircle } from 'lucide-react';
 
@@ -57,7 +57,7 @@ const FixProgress: React.FC = () => {
                   <div className="flex justify-between items-start mb-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge 
+                        <CustomBadge 
                           text={pothole.status === 'fixed' 
                             ? 'Fixed' 
                             : pothole.status === 'in-progress' 
@@ -71,7 +71,7 @@ const FixProgress: React.FC = () => {
                               ? 'accent' 
                               : 'primary'} 
                         />
-                        <Badge 
+                        <CustomBadge 
                           text={`${pothole.severity.charAt(0).toUpperCase() + pothole.severity.slice(1)} Severity`} 
                           variant={pothole.severity === 'high' ? 'alert' : pothole.severity === 'medium' ? 'accent' : 'secondary'} 
                         />

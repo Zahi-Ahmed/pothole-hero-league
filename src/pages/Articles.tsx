@@ -1,10 +1,9 @@
-
 import React from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
 import { dummyArticles } from '@/lib/dummyData';
 import { Clock, User, FileText, Search } from 'lucide-react';
-import Badge from '@/components/UI/Badge';
+import CustomBadge from '@/components/UI/CustomBadge';
 
 const Articles: React.FC = () => {
   return (
@@ -52,7 +51,7 @@ const Articles: React.FC = () => {
                 
                 <div className="p-6 md:p-8 flex flex-col">
                   <div className="mb-1">
-                    <Badge text={dummyArticles[0].category} variant="primary" className="mb-2" />
+                    <CustomBadge text={dummyArticles[0].category} variant="primary" className="mb-2" />
                   </div>
                   
                   <h2 className="text-2xl md:text-3xl font-bold text-charcoal mb-3">
@@ -105,7 +104,7 @@ const Articles: React.FC = () => {
                 
                 <div className="p-5">
                   <div className="mb-2">
-                    <Badge text={article.category} variant="primary" />
+                    <CustomBadge text={article.category} variant="primary" />
                   </div>
                   
                   <h3 className="text-xl font-bold text-charcoal mb-2 line-clamp-2">

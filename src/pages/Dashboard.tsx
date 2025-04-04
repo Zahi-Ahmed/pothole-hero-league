@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
@@ -6,8 +5,9 @@ import UserStats from '@/components/Dashboard/UserStats';
 import TaskCard from '@/components/Dashboard/TaskCard';
 import { dummyUser, dummyTasks, dummyUsers } from '@/lib/dummyData';
 import { Link } from 'react-router-dom';
-import { Fire, Award, TrendingUp, MapPin, ChevronRight } from 'lucide-react';
-import Badge from '@/components/UI/Badge';
+import { Award, TrendingUp, MapPin, ChevronRight } from 'lucide-react';
+import CustomBadge from '@/components/UI/CustomBadge';
+import Fire from '@/components/UI/Icons/Fire';
 
 const Dashboard: React.FC = () => {
   return (
@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
               <div className="bg-white rounded-2xl shadow-card p-6">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold text-charcoal">Daily Tasks</h2>
-                  <Badge text="Complete all tasks for +100 XP bonus!" variant="primary" />
+                  <CustomBadge text="Complete all tasks for +100 XP bonus!" variant="primary" />
                 </div>
                 
                 <div className="grid grid-cols-1 gap-4">

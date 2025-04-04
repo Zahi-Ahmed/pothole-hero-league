@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
 import { Camera, MapPin, Info, Send, CheckCircle } from 'lucide-react';
-import Badge from '@/components/UI/Badge';
+import CustomBadge from '@/components/UI/CustomBadge';
 import { useToast } from '@/hooks/use-toast';
 
 const ReportPothole: React.FC = () => {
@@ -30,7 +29,6 @@ const ReportPothole: React.FC = () => {
   };
 
   const getLocationClick = () => {
-    // Simulate getting location
     setTimeout(() => {
       setLocation({
         address: '123 Example Street, City, State',
@@ -49,7 +47,6 @@ const ReportPothole: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSuccess(true);
@@ -60,7 +57,6 @@ const ReportPothole: React.FC = () => {
         variant: "default",
       });
       
-      // Show XP animation
       const xpElement = document.getElementById('xp-gain');
       if (xpElement) {
         xpElement.classList.add('animate-slide-up');
@@ -104,7 +100,7 @@ const ReportPothole: React.FC = () => {
                 </p>
                 
                 <div id="xp-gain" className="mb-8 opacity-0">
-                  <Badge text="+50 XP" variant="primary" className="text-lg px-6 py-2" animate={true} />
+                  <CustomBadge text="+50 XP" variant="primary" className="text-lg px-6 py-2" animate={true} />
                   <p className="mt-2 text-sm text-gray-600">
                     You've earned points for your contribution!
                   </p>
@@ -122,7 +118,6 @@ const ReportPothole: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-card overflow-hidden">
-              {/* Upload Image Section */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
                   <Camera className="text-primary" />
@@ -166,7 +161,6 @@ const ReportPothole: React.FC = () => {
                 </p>
               </div>
               
-              {/* Location Section */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
                   <MapPin className="text-primary" />
@@ -209,7 +203,6 @@ const ReportPothole: React.FC = () => {
                 </div>
               </div>
               
-              {/* Description Section */}
               <div className="p-6 border-b border-gray-100">
                 <div className="flex items-center gap-3 mb-4">
                   <Info className="text-primary" />
@@ -256,7 +249,7 @@ const ReportPothole: React.FC = () => {
                           className="sr-only"
                         />
                         <span className="text-2xl mb-1">
-                          {level === 'low' ? '🟢' : level === 'medium' ? '🟠' : '🔴'}
+                          {level === 'low' ? '🟢' : level === 'medium' ? '����' : '🔴'}
                         </span>
                         <span className="font-medium capitalize">{level}</span>
                         <span className="text-xs text-gray-500 text-center mt-1">
@@ -273,7 +266,6 @@ const ReportPothole: React.FC = () => {
                 </div>
               </div>
               
-              {/* Submit Section */}
               <div className="p-6">
                 <button
                   type="submit"
