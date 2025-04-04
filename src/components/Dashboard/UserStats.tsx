@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { User } from '@/lib/types';
 import ProgressBar from '@/components/UI/ProgressBar';
-import Badge from '@/components/UI/Badge';
-import { Award, Flag, CheckCircle, Tool } from 'lucide-react';
+import CustomBadge from '@/components/UI/CustomBadge';
+import { Award, Flag, CheckCircle, Hammer } from 'lucide-react';
 
 interface UserStatsProps {
   user: User;
@@ -51,7 +50,7 @@ const UserStats: React.FC<UserStatsProps> = ({ user }) => {
           
           <div className="flex flex-wrap gap-2 mb-4">
             {user.badges.map((badge) => (
-              <Badge 
+              <CustomBadge 
                 key={badge.id} 
                 text={badge.name} 
                 icon={badge.icon} 
@@ -81,7 +80,7 @@ const UserStats: React.FC<UserStatsProps> = ({ user }) => {
         
         <div className="bg-accent/5 rounded-xl p-4 text-center">
           <div className="flex justify-center mb-2">
-            <Tool className="text-accent h-6 w-6" />
+            <Hammer className="text-accent h-6 w-6" />
           </div>
           <h3 className="text-2xl font-bold text-charcoal">{user.fixesCount}</h3>
           <p className="text-sm text-gray-600">Fixes</p>
