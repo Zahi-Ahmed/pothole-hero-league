@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
               Join our community mission to make roads safer by reporting and tracking potholes in your neighborhood.
             </p>
             
-            <div className="flex flex-wrap gap-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
+            <div className="flex flex-wrap gap-4 animate-fade-in relative z-10" style={{ animationDelay: '0.6s' }}>
               <Button asChild variant="secondary">
                 <Link to="/report" className="flex items-center gap-2">
                   <MapPin size={18} />

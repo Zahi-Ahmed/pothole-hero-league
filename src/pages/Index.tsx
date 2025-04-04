@@ -40,7 +40,7 @@ const Index: React.FC = () => {
               ))}
             </div>
             
-            <div className="mt-12 text-center">
+            <div className="mt-12 text-center relative z-10">
               <Button asChild variant="default" className="inline-flex items-center gap-2">
                 <Link to="/report">
                   <MapPin size={18} />
@@ -61,7 +61,7 @@ const Index: React.FC = () => {
             <p className="text-xl text-gray-600 mb-8">
               Be part of the solution. Report potholes, earn rewards, and make your community safer for everyone.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4 relative z-10">
               <Button asChild variant="default">
                 <Link to="/dashboard">
                   Get Started

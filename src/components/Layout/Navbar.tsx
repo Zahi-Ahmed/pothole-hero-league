@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,12 +46,11 @@ const Navbar: React.FC = () => {
                 {link.name}
               </Link>
             ))}
-            <Link
-              to="/donate"
-              className="ml-4 btn-primary py-2"
-            >
-              Donate
-            </Link>
+            <Button asChild variant="default" size="sm">
+              <Link to="/donate">
+                Donate
+              </Link>
+            </Button>
           </div>
           
           {/* Mobile menu button */}
@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
       
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white pb-3 px-4">
+        <div className="md:hidden bg-white pb-3 px-4 z-50">
           <div className="space-y-1">
             {navLinks.map((link) => (
               <Link
@@ -83,13 +83,16 @@ const Navbar: React.FC = () => {
                 {link.name}
               </Link>
             ))}
-            <Link
-              to="/donate"
-              className="block mt-4 btn-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Donate
-            </Link>
+            <div className="mt-4">
+              <Button asChild variant="default" className="w-full">
+                <Link
+                  to="/donate"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Donate
+                </Link>
+              </Button>
+            </div>
           </div>
         </div>
       )}
