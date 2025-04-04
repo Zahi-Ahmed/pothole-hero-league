@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Activity, Heart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Hero: React.FC = () => {
   return (
@@ -20,18 +21,24 @@ const Hero: React.FC = () => {
             </p>
             
             <div className="flex flex-wrap gap-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-              <Link to="/report" className="btn-accent flex items-center gap-2">
-                <MapPin size={18} />
-                Report Pothole
-              </Link>
-              <Link to="/progress" className="btn-secondary flex items-center gap-2">
-                <Activity size={18} />
-                See Progress
-              </Link>
-              <Link to="/donate" className="btn-outline flex items-center gap-2 bg-white/10 border-white text-white hover:bg-white hover:text-primary">
-                <Heart size={18} />
-                Donate
-              </Link>
+              <Button asChild variant="secondary">
+                <Link to="/report" className="flex items-center gap-2">
+                  <MapPin size={18} />
+                  Report Pothole
+                </Link>
+              </Button>
+              <Button asChild variant="default">
+                <Link to="/progress" className="flex items-center gap-2">
+                  <Activity size={18} />
+                  See Progress
+                </Link>
+              </Button>
+              <Button asChild variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-primary">
+                <Link to="/donate" className="flex items-center gap-2">
+                  <Heart size={18} />
+                  Donate
+                </Link>
+              </Button>
             </div>
           </div>
           

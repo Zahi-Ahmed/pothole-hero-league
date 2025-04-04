@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight, Award, MapPin } from 'lucide-react';
 import { dummyPotholes } from '@/lib/dummyData';
 import PotholeCard from '@/components/UI/PotholeCard';
+import { Button } from '@/components/ui/button';
 
 const Index: React.FC = () => {
   // Get 2 random potholes to display
@@ -40,10 +41,12 @@ const Index: React.FC = () => {
             </div>
             
             <div className="mt-12 text-center">
-              <Link to="/report" className="btn-primary inline-flex items-center gap-2">
-                <MapPin size={18} />
-                Report a Pothole
-              </Link>
+              <Button asChild variant="default" className="inline-flex items-center gap-2">
+                <Link to="/report">
+                  <MapPin size={18} />
+                  Report a Pothole
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
@@ -59,12 +62,16 @@ const Index: React.FC = () => {
               Be part of the solution. Report potholes, earn rewards, and make your community safer for everyone.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link to="/dashboard" className="btn-primary">
-                Get Started
-              </Link>
-              <Link to="/about" className="btn-outline">
-                Learn More
-              </Link>
+              <Button asChild variant="default">
+                <Link to="/dashboard">
+                  Get Started
+                </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link to="/about">
+                  Learn More
+                </Link>
+              </Button>
             </div>
           </div>
         </section>
