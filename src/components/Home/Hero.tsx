@@ -16,7 +16,7 @@ const Hero: React.FC = () => {
             <p className="text-xl md:text-2xl font-light mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
               Spot It. Report It. Fix It.
             </p>
-            <p className="text-lg mb-8 text-white/90 animate-fade-in relative z-30" style={{ animationDelay: '0.4s' }}>
+            <p className="text-lg mb-8 text-white/90 animate-fade-in relative z-30 text-shadow" style={{ animationDelay: '0.4s' }}>
               Join our community mission to make roads safer by reporting and tracking potholes in your neighborhood.
             </p>
             
