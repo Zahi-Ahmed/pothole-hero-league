@@ -25,7 +25,7 @@ const Index: React.FC = () => {
         <BenefitsSection />
         
         {/* Featured Reports Section */}
-        <section className="section bg-white">
+        <section className="section bg-white relative z-10">
           <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-10">
               <h2 className="text-3xl font-bold text-charcoal">Featured Reports</h2>
@@ -52,7 +52,7 @@ const Index: React.FC = () => {
         </section>
         
         {/* CTA Section */}
-        <section className="section bg-primary/5">
+        <section className="section bg-primary/5 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="mb-6 flex justify-center">
               <Award size={48} className="text-primary" />
