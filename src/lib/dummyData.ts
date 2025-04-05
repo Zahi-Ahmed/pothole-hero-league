@@ -145,7 +145,7 @@ export const dummyUsers: User[] = [
 export const dummyPotholes: Pothole[] = [
   {
     id: "p1",
-    image: "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1603811434402-31e7687e2761?q=80&w=1000",
     location: {
       address: "123 Main St, Cityville",
       lat: 40.7128,
@@ -175,7 +175,7 @@ export const dummyPotholes: Pothole[] = [
   },
   {
     id: "p2",
-    image: "https://images.unsplash.com/photo-1592840062661-a5f6ef3f2bb6?q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1605077031042-28369ec65449?q=80&w=1000",
     location: {
       address: "456 Oak Avenue, Downtown",
       lat: 40.7135,
@@ -205,7 +205,7 @@ export const dummyPotholes: Pothole[] = [
   },
   {
     id: "p3",
-    image: "https://images.unsplash.com/photo-1518162161102-e8c9827b5992?q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1605077030899-45173936bf31?q=80&w=1000",
     location: {
       address: "789 Pine Road, Westside",
       lat: 40.7140,
@@ -225,7 +225,7 @@ export const dummyPotholes: Pothole[] = [
   },
   {
     id: "p4",
-    image: "https://images.unsplash.com/photo-1598898027205-46c5ab8699fc?q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1605077216296-766a3b667dee?q=80&w=1000",
     location: {
       address: "234 Maple Street, Eastside",
       lat: 40.7120,
@@ -242,7 +242,7 @@ export const dummyPotholes: Pothole[] = [
     verifiedCount: 8,
     rejectedCount: 0,
     fixedDate: "2023-04-08",
-    fixedImage: "https://images.unsplash.com/photo-1520521210014-8071e35f4322?q=80&w=1000",
+    fixedImage: "https://images.unsplash.com/photo-1604009336158-2cbdea40ef97?q=80&w=1000",
     comments: [
       {
         id: "c3",
@@ -257,7 +257,7 @@ export const dummyPotholes: Pothole[] = [
   },
   {
     id: "p5",
-    image: "https://images.unsplash.com/photo-1509059828227-e38a42427669?q=80&w=1000", 
+    image: "https://images.unsplash.com/photo-1605077135910-0801d63e2f5c?q=80&w=1000", 
     location: {
       address: "567 Elm Boulevard, Northside",
       lat: 40.7145,
@@ -292,7 +292,7 @@ export const dummyArticles: Article[] = [
     id: "a1",
     title: "The Growing Pothole Crisis: How Citizens Are Fighting Back",
     excerpt: "With infrastructure funding at historic lows, communities are taking matters into their own hands.",
-    imageUrl: "https://images.unsplash.com/photo-1643402928803-3f3d230b0a7d?q=80&w=1000",
+    imageUrl: "https://images.unsplash.com/photo-1625224153297-741c97ae5685?q=80&w=1000",
     date: "2023-04-01",
     author: {
       name: "Rakesh Sharma",
@@ -305,7 +305,7 @@ export const dummyArticles: Article[] = [
     id: "a2",
     title: "Using RTI to Demand Better Roads: A Step-by-Step Guide",
     excerpt: "Learn how the Right to Information Act can be a powerful tool for holding authorities accountable.",
-    imageUrl: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?q=80&w=1000",
+    imageUrl: "https://images.unsplash.com/photo-1517330225264-d354cc0bc5a4?q=80&w=1000",
     date: "2023-03-20",
     author: {
       name: "Anita Desai",
@@ -318,7 +318,7 @@ export const dummyArticles: Article[] = [
     id: "a3",
     title: "The Real Cost of Bad Roads: Accidents, Vehicle Damage, and Economic Impact",
     excerpt: "Studies show that poor road conditions cost the average driver over ₹10,000 annually in vehicle repairs.",
-    imageUrl: "https://images.unsplash.com/photo-1581093806997-124204d9fa9d?q=80&w=1000",
+    imageUrl: "https://images.unsplash.com/photo-1527669538811-88bd89cb2774?q=80&w=1000",
     date: "2023-03-15",
     author: {
       name: "Dr. Vikram Patel",
@@ -331,7 +331,7 @@ export const dummyArticles: Article[] = [
     id: "a4",
     title: "Success Story: How One Neighborhood Got All Their Potholes Fixed in a Month",
     excerpt: "The residents of Green Park show how organized community action can produce remarkable results.",
-    imageUrl: "https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=1000",
+    imageUrl: "https://images.unsplash.com/photo-1531218614303-d8fdc5d10288?q=80&w=1000",
     date: "2023-02-28",
     author: {
       name: "Maya Singh",

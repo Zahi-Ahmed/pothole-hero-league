@@ -46,8 +46,8 @@ const Hero: React.FC = () => {
             <div className="relative">
               <div className="bg-white/20 backdrop-blur-sm rounded-3xl overflow-hidden shadow-xl transform rotate-3">
                 <img 
-                  src="https://images.unsplash.com/photo-1621939514649-280e2ee25f60?q=80&w=1000" 
-                  alt="Pothole" 
+                  src="https://images.unsplash.com/photo-1603811434402-31e7687e2761?q=80&w=1000" 
+                  alt="Pothole on a road" 
                   className="w-full h-auto object-cover rounded-lg"
                   style={{ maxWidth: '400px' }}
                 />
