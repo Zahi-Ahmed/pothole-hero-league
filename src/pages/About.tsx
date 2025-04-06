@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
@@ -7,28 +6,28 @@ import { Award, Globe, Users, Heart, Shield, Smartphone, Mail, MessageCircle } f
 const About: React.FC = () => {
   const teamMembers = [
     {
-      name: "Team Nexium Lead",
-      role: "Founder & Developer",
-      image: "https://randomuser.me/api/portraits/men/32.jpg",
+      name: "Zahi",
+      role: "Developer",
+      image: "",
       description: "Leading the charge in creating innovative civic tech solutions for our community."
     },
     {
-      name: "Nexium Community Manager",
-      role: "Community Manager",
-      image: "https://randomuser.me/api/portraits/women/44.jpg",
+      name: "Priyanshu",
+      role: "Social Media Manager",
+      image: "",
       description: "Builds and nurtures our growing community of pothole warriors across the country."
     },
     {
-      name: "Government Liaison",
-      role: "Municipal Liaison",
-      image: "https://randomuser.me/api/portraits/men/62.jpg",
-      description: "Works directly with city officials to ensure reported potholes get fixed quickly."
+      name: "Vansh",
+      role: "Back End Developer",
+      image: "",
+      description: "Works directly with the database and ensures system stability and performance."
     },
     {
-      name: "UX Designer",
-      role: "UX Designer",
-      image: "https://randomuser.me/api/portraits/women/65.jpg",
-      description: "Creates intuitive, engaging experiences that make reporting potholes fun and easy."
+      name: "Tushar",
+      role: "Content Writer",
+      image: "",
+      description: "Creates compelling content that educates and engages our community about road safety."
     }
   ];
   
@@ -153,12 +152,8 @@ const About: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {teamMembers.map((member, index) => (
                 <div key={index} className="bg-white rounded-2xl shadow-card p-6 text-center">
-                  <div className="mb-4 mx-auto w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10">
-                    <img 
-                      src={member.image} 
-                      alt={member.name} 
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="mb-4 mx-auto w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 flex items-center justify-center bg-gray-100">
+                    <span className="text-4xl">{member.name.charAt(0)}</span>
                   </div>
                   <h3 className="text-xl font-bold text-charcoal mb-1">{member.name}</h3>
                   <p className="text-primary font-medium mb-3">{member.role}</p>

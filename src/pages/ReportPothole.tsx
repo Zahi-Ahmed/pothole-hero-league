@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
@@ -6,6 +7,7 @@ import CustomBadge from '@/components/UI/CustomBadge';
 import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import { Pothole } from '@/lib/types';
 
 const ReportPothole: React.FC = () => {
   const { toast } = useToast();
@@ -32,12 +34,17 @@ const ReportPothole: React.FC = () => {
   };
 
   const getLocationClick = () => {
+    setIsSubmitting(true);
+    
+    // Simulate fetching location
     setTimeout(() => {
       setLocation({
-        address: '123 Example Street, City, State',
-        lat: 40.7128,
-        lng: -74.006,
+        address: 'Detected Address, New Delhi, India',
+        lat: 28.6139,
+        lng: 77.2090,
       });
+      
+      setIsSubmitting(false);
       
       toast({
         title: "Location detected",
@@ -49,6 +56,36 @@ const ReportPothole: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    
+    // Create new pothole report
+    const newReport: Pothole = {
+      id: `p-${uuidv4()}`,
+      image: image || '',
+      location: {
+        address: location.address,
+        lat: location.lat,
+        lng: location.lng,
+      },
+      description: description,
+      severity: severity,
+      status: 'reported',
+      reportedBy: {
+        userId: 'current-user',
+        name: 'Current User',
+      },
+      reportedDate: new Date().toISOString(),
+      verifiedCount: 0,
+      rejectedCount: 0,
+      comments: [],
+    };
+    
+    // Add to localStorage
+    const existingReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
+    const updatedReports = [newReport, ...existingReports];
+    localStorage.setItem('potholeReports', JSON.stringify(updatedReports));
+    
+    // Trigger localStorage event so other components can update
+    window.dispatchEvent(new Event('storage'));
     
     setTimeout(() => {
       setIsSubmitting(false);

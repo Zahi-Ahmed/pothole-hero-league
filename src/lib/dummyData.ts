@@ -1,4 +1,3 @@
-
 import { Article, Badge, Pothole, Task, User } from "./types";
 
 export const dummyBadges: Badge[] = [
@@ -285,6 +284,106 @@ export const dummyPotholes: Pothole[] = [
       },
     ],
   },
+  {
+    id: "p6",
+    image: "https://images.unsplash.com/photo-1605077193734-866ed2b2b494?q=80&w=1000",
+    location: {
+      address: "123 Railway Road, Southside",
+      lat: 40.7125,
+      lng: -74.010,
+    },
+    description: "Deep pothole near the bus stop, causing problems for elderly pedestrians.",
+    severity: "high",
+    status: "reported",
+    reportedBy: {
+      userId: "u3",
+      name: "Sarah Johnson",
+    },
+    reportedDate: "2023-04-12",
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: "p7",
+    image: "https://images.unsplash.com/photo-1604009677692-1f96daa1f3c8?q=80&w=1000",
+    location: {
+      address: "456 College Street, University Area",
+      lat: 40.7130,
+      lng: -74.018,
+    },
+    description: "Small pothole growing rapidly after recent rains. Located right at the pedestrian crossing.",
+    severity: "medium",
+    status: "reported",
+    reportedBy: {
+      userId: "u2",
+      name: "Alex Morgan",
+    },
+    reportedDate: "2023-04-11",
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: "p8",
+    image: "https://images.unsplash.com/photo-1555685812-4b8f286284ad?q=80&w=1000",
+    location: {
+      address: "789 Market Street, Shopping District",
+      lat: 40.7126,
+      lng: -74.014,
+    },
+    description: "Several small potholes clustered in the parking area, causing difficulty for shoppers.",
+    severity: "low",
+    status: "reported",
+    reportedBy: {
+      userId: "u1",
+      name: "Jane Cooper",
+    },
+    reportedDate: "2023-04-09",
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: "p9",
+    image: "https://images.unsplash.com/photo-1594818379496-da1e345b0ded?q=80&w=1000",
+    location: {
+      address: "321 Industrial Parkway, Factory Zone",
+      lat: 40.7150,
+      lng: -74.020,
+    },
+    description: "Large pothole blocking drainage, causing water buildup during rains. Hazardous for trucks.",
+    severity: "high",
+    status: "reported",
+    reportedBy: {
+      userId: "u4",
+      name: "Michael Chen",
+    },
+    reportedDate: "2023-04-08",
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: "p10",
+    image: "https://images.unsplash.com/photo-1596645661337-1e643877df0e?q=80&w=1000",
+    location: {
+      address: "987 Hillside Drive, Residential Area",
+      lat: 40.7118,
+      lng: -74.011,
+    },
+    description: "Medium-sized pothole causing noise when vehicles pass over it, disrupting residents.",
+    severity: "medium",
+    status: "reported",
+    reportedBy: {
+      userId: "u5",
+      name: "Priya Sharma",
+    },
+    reportedDate: "2023-04-07",
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  }
 ];
 
 export const dummyArticles: Article[] = [

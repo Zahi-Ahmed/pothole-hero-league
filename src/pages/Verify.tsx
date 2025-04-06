@@ -1,20 +1,32 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
 import PotholeCard from '@/components/UI/PotholeCard';
 import { dummyPotholes } from '@/lib/dummyData';
 import { CheckCircle, X, Info, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Pothole } from '@/lib/types';
 
 const Verify: React.FC = () => {
   const { toast } = useToast();
-  const [potholes, setPotholes] = useState(dummyPotholes.filter(p => p.status === 'reported'));
+  const [reportedPotholes, setReportedPotholes] = useState<Pothole[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+  const [verifiedCount, setVerifiedCount] = useState(0);
+
+  useEffect(() => {
+    // Get all potholes with status "reported"
+    const reported = dummyPotholes.filter(p => p.status === 'reported');
+    // Also add any user-submitted reports from localStorage
+    const userSubmittedReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
+    const combined = [...reported, ...userSubmittedReports.filter((p: Pothole) => p.status === 'reported')];
+    
+    setReportedPotholes(combined);
+  }, []);
 
   const handleSwipeLeft = () => {
-    if (currentIndex < potholes.length) {
+    if (currentIndex < reportedPotholes.length) {
       setSwipeDirection('left');
       
       toast({
@@ -23,26 +35,27 @@ const Verify: React.FC = () => {
         variant: "destructive",
       });
       
-      // After animation completes, remove the pothole and reset direction
+      // After animation completes, move to next pothole
       setTimeout(() => {
-        setPotholes(prev => prev.filter((_, i) => i !== currentIndex));
+        setCurrentIndex(prev => prev + 1);
         setSwipeDirection(null);
       }, 300);
     }
   };
 
   const handleSwipeRight = () => {
-    if (currentIndex < potholes.length) {
+    if (currentIndex < reportedPotholes.length) {
       setSwipeDirection('right');
+      setVerifiedCount(prev => prev + 1);
       
       toast({
         title: "Report Verified",
         description: "+10 XP earned for verification!",
       });
       
-      // After animation completes, remove the pothole and reset direction
+      // After animation completes, move to next pothole
       setTimeout(() => {
-        setPotholes(prev => prev.filter((_, i) => i !== currentIndex));
+        setCurrentIndex(prev => prev + 1);
         setSwipeDirection(null);
       }, 300);
     }
@@ -93,10 +106,10 @@ const Verify: React.FC = () => {
           
           {/* Swipe Cards Container */}
           <div className="relative h-[600px] mb-8">
-            {potholes.length > 0 ? (
+            {reportedPotholes.length > 0 && currentIndex < reportedPotholes.length ? (
               <div className={`swipe-card ${getSwipeClass()}`}>
                 <PotholeCard 
-                  pothole={potholes[currentIndex]} 
+                  pothole={reportedPotholes[currentIndex]} 
                   showActions={true} 
                   onSwipeLeft={handleSwipeLeft}
                   onSwipeRight={handleSwipeRight}
@@ -112,14 +125,14 @@ const Verify: React.FC = () => {
                   You've verified all available reports. Check back later for more!
                 </p>
                 <div className="inline-flex items-center justify-center px-4 py-2 bg-primary/5 rounded-full text-primary font-medium">
-                  +{potholes.length * 10} XP Earned
+                  +{verifiedCount * 10} XP Earned
                 </div>
               </div>
             )}
           </div>
           
           {/* Swipe Indicators */}
-          {potholes.length > 0 && (
+          {reportedPotholes.length > 0 && currentIndex < reportedPotholes.length && (
             <div className="flex justify-center gap-8 mb-8">
               <button
                 onClick={handleSwipeLeft}
@@ -144,15 +157,15 @@ const Verify: React.FC = () => {
           )}
           
           {/* Progress */}
-          {potholes.length > 0 && (
+          {reportedPotholes.length > 0 && currentIndex < reportedPotholes.length && (
             <div className="text-center">
               <p className="text-gray-600 mb-2">
-                {currentIndex + 1} of {potholes.length} reports
+                {currentIndex + 1} of {reportedPotholes.length} reports
               </p>
               <div className="w-full bg-gray-200 rounded-full h-2 mb-6">
                 <div 
                   className="bg-primary rounded-full h-2 transition-all duration-300"
-                  style={{ width: `${((currentIndex + 1) / potholes.length) * 100}%` }}
+                  style={{ width: `${((currentIndex + 1) / reportedPotholes.length) * 100}%` }}
                 ></div>
               </div>
             </div>
