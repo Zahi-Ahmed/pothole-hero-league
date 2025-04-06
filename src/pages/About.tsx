@@ -7,25 +7,25 @@ import { Award, Globe, Users, Heart, Shield, Smartphone, Mail, MessageCircle } f
 const About: React.FC = () => {
   const teamMembers = [
     {
-      name: "Aryan Sharma",
+      name: "Team Nexium Lead",
       role: "Founder & Developer",
       image: "https://randomuser.me/api/portraits/men/32.jpg",
-      description: "Passionate about using technology to solve real-world problems in our communities."
+      description: "Leading the charge in creating innovative civic tech solutions for our community."
     },
     {
-      name: "Neha Patel",
+      name: "Nexium Community Manager",
       role: "Community Manager",
       image: "https://randomuser.me/api/portraits/women/44.jpg",
       description: "Builds and nurtures our growing community of pothole warriors across the country."
     },
     {
-      name: "Vikram Singh",
+      name: "Government Liaison",
       role: "Municipal Liaison",
       image: "https://randomuser.me/api/portraits/men/62.jpg",
       description: "Works directly with city officials to ensure reported potholes get fixed quickly."
     },
     {
-      name: "Priya Desai",
+      name: "UX Designer",
       role: "UX Designer",
       image: "https://randomuser.me/api/portraits/women/65.jpg",
       description: "Creates intuitive, engaging experiences that make reporting potholes fun and easy."
@@ -57,13 +57,13 @@ const About: React.FC = () => {
               <div>
                 <h2 className="text-3xl font-bold text-charcoal mb-4">Our Story</h2>
                 <p className="text-gray-600 mb-4">
-                  PatchItUp started in 2022 when founder Aryan Sharma hit a massive pothole on his commute, causing a flat tire and making him miss an important meeting. Frustrated by the lack of action from local authorities, he developed this platform to empower citizens.
+                  PatchItUp was created by Team Nexium with a vision to bridge the gap between citizens and government. We're working towards the betterment of our country by building tools that empower communities to take action.
                 </p>
                 <p className="text-gray-600 mb-4">
                   What began as a simple reporting tool has grown into a nationwide movement with thousands of active users working together to improve road safety in their communities.
                 </p>
                 <p className="text-gray-600">
-                  Our unique approach combines easy-to-use technology with game mechanics to make civic engagement both effective and enjoyable.
+                  Our mission at Team Nexium is to create meaningful connections between citizens and government, making it easier for both sides to collaborate on solving everyday problems.
                 </p>
               </div>
               
@@ -95,7 +95,7 @@ const About: React.FC = () => {
                 </div>
                 <h3 className="text-2xl font-bold text-charcoal mb-3">Our Mission</h3>
                 <p className="text-gray-600">
-                  To create safer roads by empowering citizens to report, track, and advocate for the repair of dangerous potholes and road conditions in their communities.
+                  To create safer roads by empowering citizens to report, track, and advocate for the repair of dangerous potholes and road conditions in their communities, while strengthening the bond between citizens and government.
                 </p>
                 <ul className="mt-4 space-y-2">
                   <li className="flex items-start gap-2">
@@ -144,9 +144,9 @@ const About: React.FC = () => {
         <section className="py-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-charcoal mb-4">Meet Our Team</h2>
+              <h2 className="text-3xl font-bold text-charcoal mb-4">Meet Team Nexium</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                We're a dedicated group of individuals passionate about road safety and civic engagement.
+                We're a dedicated group working towards the betterment of our country by binding citizens and government together.
               </p>
             </div>
             

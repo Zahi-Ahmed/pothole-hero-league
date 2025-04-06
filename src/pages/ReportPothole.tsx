@@ -4,6 +4,8 @@ import Footer from '@/components/Layout/Footer';
 import { Camera, MapPin, Info, Send, CheckCircle } from 'lucide-react';
 import CustomBadge from '@/components/UI/CustomBadge';
 import { useToast } from '@/hooks/use-toast';
+import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 const ReportPothole: React.FC = () => {
   const { toast } = useToast();
@@ -17,6 +19,7 @@ const ReportPothole: React.FC = () => {
   });
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState<'low' | 'medium' | 'high'>('medium');
+  const navigate = useNavigate();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -77,6 +80,10 @@ const ReportPothole: React.FC = () => {
     setSeverity('medium');
   };
 
+  const navigateToProgress = () => {
+    navigate('/progress');
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-softWhite">
       <Navbar />
@@ -110,8 +117,8 @@ const ReportPothole: React.FC = () => {
                   <button onClick={resetForm} className="btn-primary">
                     Report Another Pothole
                   </button>
-                  <button onClick={() => window.location.href = '/dashboard'} className="btn-outline">
-                    Back to Dashboard
+                  <button onClick={navigateToProgress} className="btn-outline">
+                    View Your Report
                   </button>
                 </div>
               </div>

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
 import { dummyPotholes } from '@/lib/dummyData';
@@ -7,8 +7,12 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import FilterBar from '@/components/FixProgress/FilterBar';
 import PotholeDetailCard from '@/components/FixProgress/PotholeDetailCard';
 import EmptyState from '@/components/FixProgress/EmptyState';
+import { Pothole } from '@/lib/types';
 
 const FixProgress: React.FC = () => {
+  // State for all potholes (combined dummy and user-submitted)
+  const [allPotholes, setAllPotholes] = useState<Pothole[]>([]);
+  
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
@@ -20,6 +24,28 @@ const FixProgress: React.FC = () => {
   // Comment state
   const [commentText, setCommentText] = useState<string>('');
   const [activePotholeId, setActivePotholeId] = useState<string | null>(null);
+
+  // Load potholes on initial render and whenever localStorage changes
+  useEffect(() => {
+    const loadPotholes = () => {
+      // Get user-submitted reports from localStorage
+      const userSubmittedReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
+      
+      // Combine with dummy data
+      setAllPotholes([...userSubmittedReports, ...dummyPotholes]);
+    };
+
+    // Load initially
+    loadPotholes();
+
+    // Set up event listener for storage changes
+    window.addEventListener('storage', loadPotholes);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('storage', loadPotholes);
+    };
+  }, []);
 
   // Format date strings
   const formatDate = (dateString: string) => {
@@ -47,12 +73,12 @@ const FixProgress: React.FC = () => {
 
   // Filter potholes based on active filter
   const filterPotholes = () => {
-    if (activeFilter === 'all') return dummyPotholes;
-    return dummyPotholes.filter(pothole => pothole.status === activeFilter);
+    if (activeFilter === 'all') return allPotholes;
+    return allPotholes.filter(pothole => pothole.status === activeFilter);
   };
 
   // Sort potholes based on sort option
-  const sortPotholes = (potholes: typeof dummyPotholes) => {
+  const sortPotholes = (potholes: Pothole[]) => {
     switch (sortBy) {
       case 'newest':
         return [...potholes].sort((a, b) => new Date(b.reportedDate).getTime() - new Date(a.reportedDate).getTime());
@@ -154,18 +180,47 @@ const FixProgress: React.FC = () => {
   const handleCommentSubmit = (potholeId: string) => {
     if (!commentText.trim()) return;
     
-    console.log('Submitting comment:', {
-      potholeId,
-      text: commentText
+    // Create new comment
+    const newComment = {
+      id: `comment-${Date.now()}`,
+      userId: 'current-user',
+      userName: 'Current User',
+      userAvatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      text: commentText,
+      date: new Date().toISOString(),
+      likes: 0
+    };
+    
+    // Update potholes with the new comment
+    const updatedPotholes = allPotholes.map(pothole => {
+      if (pothole.id === potholeId) {
+        return {
+          ...pothole,
+          comments: [...pothole.comments, newComment]
+        };
+      }
+      return pothole;
     });
+    
+    setAllPotholes(updatedPotholes);
+    
+    // If this is a user-submitted report, update localStorage
+    const userSubmittedReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
+    const updatedUserReports = userSubmittedReports.map(pothole => {
+      if (pothole.id === potholeId) {
+        return {
+          ...pothole,
+          comments: [...pothole.comments, newComment]
+        };
+      }
+      return pothole;
+    });
+    
+    localStorage.setItem('potholeReports', JSON.stringify(updatedUserReports));
     
     // Reset form
     setCommentText('');
     setActivePotholeId(null);
-    
-    // In a real implementation, this would send the comment to the backend
-    // For now, show a console message
-    console.log('Comment submitted successfully');
   };
 
   return (
