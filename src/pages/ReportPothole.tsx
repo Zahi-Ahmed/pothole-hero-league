@@ -8,9 +8,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Pothole } from '@/lib/types';
 import { extractLocationFromImage, readImageAsDataURL } from '@/lib/imageUtils';
-import { verifyPotholeImage, checkForNearbyPotholes } from '@/lib/aiUtils';
-import DuplicatePotholeModal from '@/components/PotholeVerification/DuplicatePotholeModal';
-import AIVerificationResult from '@/components/PotholeVerification/AIVerificationResult';
 
 const ReportPothole: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,64 +25,31 @@ const ReportPothole: React.FC = () => {
   const [locationError, setLocationError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const [isAIVerifying, setIsAIVerifying] = useState(false);
-  const [aiVerification, setAIVerification] = useState<{
-    isPothole: boolean;
-    confidence: number;
-    message: string;
-  } | null>(null);
-  
-  const [showDuplicateModal, setShowDuplicateModal] = useState(false);
-  const [nearbyPothole, setNearbyPothole] = useState<Pothole | null>(null);
-  const [bypassDuplicateCheck, setBypassDuplicateCheck] = useState(false);
-
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setImageFile(file);
       setLocationError(null);
-      setAIVerification(null);
       
       try {
+        // Read and display the image
         const dataUrl = await readImageAsDataURL(file);
         setImage(dataUrl);
         
+        // Show loading state for location detection
         setIsLocationLoading(true);
         toast.info("Processing image and attempting to detect location...");
         
+        // Try to extract location from image metadata
         const locationData = await extractLocationFromImage(file);
         
         if (locationData) {
           setLocation(locationData);
           toast.success("Location detected from image or current position");
           setLocationError(null);
-          
-          const nearbyCheck = await checkForNearbyPotholes(
-            locationData.lat,
-            locationData.lng,
-            30
-          );
-          
-          if (nearbyCheck.isNearby && nearbyCheck.nearbyPothole) {
-            setNearbyPothole(nearbyCheck.nearbyPothole);
-            setShowDuplicateModal(true);
-            toast.info("Similar pothole report found nearby.");
-          }
         } else {
           setLocationError("Couldn't detect location automatically. Please enter manually or try again.");
           toast.error("Location detection failed. Please enter manually.");
-        }
-        
-        setIsAIVerifying(true);
-        const verificationResult = await verifyPotholeImage(dataUrl);
-        setAIVerification(verificationResult);
-        
-        if (!verificationResult.isPothole) {
-          toast.error("The image doesn't appear to show a pothole. Please try a clearer image.");
-        } else if (verificationResult.confidence > 0.7) {
-          toast.success("Image verified as a pothole successfully!");
-        } else {
-          toast.info(verificationResult.message);
         }
       } catch (error) {
         console.error("Error processing image:", error);
@@ -93,7 +57,6 @@ const ReportPothole: React.FC = () => {
         toast.error("Error processing image. Please try again.");
       } finally {
         setIsLocationLoading(false);
-        setIsAIVerifying(false);
       }
     }
   };
@@ -120,6 +83,7 @@ const ReportPothole: React.FC = () => {
       
       const { latitude, longitude } = position.coords;
       
+      // Reverse geocode to get the address
       const response = await fetch(
         `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
         {
@@ -152,70 +116,52 @@ const ReportPothole: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    try {
-      if (!bypassDuplicateCheck && location.lat && location.lng) {
-        const nearbyCheck = await checkForNearbyPotholes(
-          location.lat,
-          location.lng,
-          30
-        );
-        
-        if (nearbyCheck.isNearby && nearbyCheck.nearbyPothole) {
-          setNearbyPothole(nearbyCheck.nearbyPothole);
-          setShowDuplicateModal(true);
-          setIsSubmitting(false);
-          return;
-        }
-      }
-      
-      const newReport: Pothole = {
-        id: `p-${uuidv4()}`,
-        image: image || '',
-        location: {
-          address: location.address,
-          lat: location.lat,
-          lng: location.lng,
-        },
-        description: description,
-        severity: severity,
-        status: 'reported',
-        reportedBy: {
-          userId: 'current-user',
-          name: 'Current User',
-        },
-        reportedDate: new Date().toISOString(),
-        verifiedCount: 0,
-        rejectedCount: 0,
-        comments: [],
-      };
-      
-      const existingReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
-      const updatedReports = [newReport, ...existingReports];
-      localStorage.setItem('potholeReports', JSON.stringify(updatedReports));
-      
-      window.dispatchEvent(new Event('storage'));
-      
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setIsSuccess(true);
-        
-        toast.success("Report submitted successfully! Thank you for making our roads safer.");
-        
-        const xpElement = document.getElementById('xp-gain');
-        if (xpElement) {
-          xpElement.classList.add('animate-slide-up');
-          xpElement.style.opacity = '1';
-        }
-      }, 1500);
-    } catch (error) {
-      console.error("Error submitting report:", error);
-      toast.error("Failed to submit report. Please try again.");
+    // Create new pothole report
+    const newReport: Pothole = {
+      id: `p-${uuidv4()}`,
+      image: image || '',
+      location: {
+        address: location.address,
+        lat: location.lat,
+        lng: location.lng,
+      },
+      description: description,
+      severity: severity,
+      status: 'reported',
+      reportedBy: {
+        userId: 'current-user',
+        name: 'Current User',
+      },
+      reportedDate: new Date().toISOString(),
+      verifiedCount: 0,
+      rejectedCount: 0,
+      comments: [],
+    };
+    
+    // Add to localStorage
+    const existingReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
+    const updatedReports = [newReport, ...existingReports];
+    localStorage.setItem('potholeReports', JSON.stringify(updatedReports));
+    
+    // Trigger localStorage event so other components can update
+    window.dispatchEvent(new Event('storage'));
+    
+    setTimeout(() => {
       setIsSubmitting(false);
-    }
+      setIsSuccess(true);
+      
+      toast.success("Report submitted successfully! Thank you for making our roads safer.");
+      
+      const xpElement = document.getElementById('xp-gain');
+      if (xpElement) {
+        xpElement.classList.add('animate-slide-up');
+        xpElement.style.opacity = '1';
+      }
+    }, 1500);
   };
 
   const resetForm = () => {
@@ -234,19 +180,6 @@ const ReportPothole: React.FC = () => {
 
   const navigateToProgress = () => {
     navigate('/progress');
-  };
-
-  const handleDuplicateModalClose = () => {
-    setShowDuplicateModal(false);
-    if (nearbyPothole) {
-      navigate(`/progress`);
-    }
-  };
-
-  const handleProceedAnyway = () => {
-    setShowDuplicateModal(false);
-    setBypassDuplicateCheck(true);
-    toast.info("You can now submit your report anyway.");
   };
 
   return (
@@ -310,8 +243,6 @@ const ReportPothole: React.FC = () => {
                           lng: 0,
                         });
                         setLocationError(null);
-                        setAIVerification(null);
-                        setBypassDuplicateCheck(false);
                       }}
                       className="absolute top-3 right-3 bg-charcoal/70 text-white p-2 rounded-full hover:bg-charcoal transition-colors"
                     >
@@ -339,20 +270,9 @@ const ReportPothole: React.FC = () => {
                   </div>
                 )}
                 
-                {aiVerification && (
-                  <div className="mt-4 mb-4">
-                    <AIVerificationResult 
-                      isPothole={aiVerification.isPothole}
-                      confidence={aiVerification.confidence}
-                      message={aiVerification.message}
-                      isVerifying={isAIVerifying}
-                    />
-                  </div>
-                )}
-                
                 <p className="text-sm text-gray-500">
-                  Please upload a clear photo of the pothole. Our AI will verify the image
-                  and we'll check if it has already been reported.
+                  Please upload a clear photo of the pothole. This helps verify the report quickly and 
+                  we'll try to detect the location from the image metadata.
                 </p>
               </div>
               
@@ -515,20 +435,10 @@ const ReportPothole: React.FC = () => {
               <div className="p-6">
                 <button
                   type="submit"
-                  disabled={
-                    isSubmitting || 
-                    !image || 
-                    !location.address || 
-                    !description || 
-                    (aiVerification && !aiVerification.isPothole)
-                  }
+                  disabled={isSubmitting || !image || !location.address || !description}
                   className={`
                     w-full btn-primary flex items-center justify-center gap-2
-                    ${(isSubmitting || 
-                       !image || 
-                       !location.address || 
-                       !description ||
-                       (aiVerification && !aiVerification.isPothole)) 
+                    ${(isSubmitting || !image || !location.address || !description) 
                       ? 'opacity-70 cursor-not-allowed' 
                       : ''}
                   `}
@@ -559,13 +469,6 @@ const ReportPothole: React.FC = () => {
           )}
         </div>
       </main>
-      
-      <DuplicatePotholeModal
-        isOpen={showDuplicateModal}
-        onClose={handleDuplicateModalClose}
-        onProceed={handleProceedAnyway}
-        pothole={nearbyPothole}
-      />
       
       <Footer />
     </div>
