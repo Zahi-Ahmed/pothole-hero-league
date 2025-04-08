@@ -12,6 +12,7 @@ import FixProgress from "./pages/FixProgress";
 import Leaderboard from "./pages/Leaderboard";
 import Articles from "./pages/Articles";
 import About from "./pages/About";
+import Donate from "./pages/Donate";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/articles" element={<Articles />} />
           <Route path="/about" element={<About />} />
+          <Route path="/donate" element={<Donate />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

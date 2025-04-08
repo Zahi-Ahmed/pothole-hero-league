@@ -1,231 +1,146 @@
+
 import React from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
-import { Award, Globe, Users, Heart, Shield, Smartphone, Mail, MessageCircle } from 'lucide-react';
+import { Users, Award, Heart, Sparkles } from 'lucide-react';
 
-const About: React.FC = () => {
-  const teamMembers = [
-    {
-      name: "Zahi",
-      role: "Developer",
-      image: "",
-      description: "Leading the charge in creating innovative civic tech solutions for our community."
-    },
-    {
-      name: "Priyanshu",
-      role: "Social Media Manager",
-      image: "",
-      description: "Builds and nurtures our growing community of pothole warriors across the country."
-    },
-    {
-      name: "Vansh",
-      role: "Back End Developer",
-      image: "",
-      description: "Works directly with the database and ensures system stability and performance."
-    },
-    {
-      name: "Tushar",
-      role: "Content Writer",
-      image: "",
-      description: "Creates compelling content that educates and engages our community about road safety."
-    }
-  ];
-  
+const teamMembers = [
+  {
+    id: 1,
+    name: "Zahi",
+    role: "Developer",
+    avatar: "https://via.placeholder.com/400x400?text=Zahi",
+    bio: "Full-stack developer with expertise in React and building user-friendly interfaces for community-driven applications."
+  },
+  {
+    id: 2,
+    name: "Priyanshu",
+    role: "Social Media Manager",
+    avatar: "https://via.placeholder.com/400x400?text=Priyanshu",
+    bio: "Social media expert with a passion for community engagement and digital marketing strategies."
+  },
+  {
+    id: 3,
+    name: "Vansh",
+    role: "Back End Developer",
+    avatar: "https://via.placeholder.com/400x400?text=Vansh",
+    bio: "Backend specialist focused on creating robust APIs and database solutions for scalable applications."
+  },
+  {
+    id: 4,
+    name: "Tushar",
+    role: "Content Writer",
+    avatar: "https://via.placeholder.com/400x400?text=Tushar",
+    bio: "Creative content writer with a knack for crafting engaging narratives that resonate with diverse audiences."
+  }
+];
+
+const About = () => {
   return (
     <div className="min-h-screen flex flex-col bg-softWhite">
       <Navbar />
       
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary to-primary-dark text-white py-16 md:py-24">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="mb-6 flex justify-center">
-              <Shield size={48} className="text-white" />
+      <main className="flex-grow py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          {/* Hero section */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/20 rounded-full mb-6">
+              <Users className="text-primary h-6 w-6" />
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">About PatchItUp</h1>
-            <p className="text-xl md:text-2xl font-light mb-8 max-w-3xl mx-auto">
-              We're on a mission to make our roads safer through community action and civic engagement.
+            <h1 className="text-4xl font-bold text-charcoal mb-4">About Team Nexium</h1>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              We are working towards the betterment of the country and binding our citizens and government together.
             </p>
           </div>
-        </section>
-        
-        {/* Our Story Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-              <div>
-                <h2 className="text-3xl font-bold text-charcoal mb-4">Our Story</h2>
-                <p className="text-gray-600 mb-4">
-                  PatchItUp was created by Team Nexium with a vision to bridge the gap between citizens and government. We're working towards the betterment of our country by building tools that empower communities to take action.
-                </p>
-                <p className="text-gray-600 mb-4">
-                  What began as a simple reporting tool has grown into a nationwide movement with thousands of active users working together to improve road safety in their communities.
-                </p>
-                <p className="text-gray-600">
-                  Our mission at Team Nexium is to create meaningful connections between citizens and government, making it easier for both sides to collaborate on solving everyday problems.
-                </p>
-              </div>
-              
-              <div className="order-first md:order-last">
-                <img 
-                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=1000" 
-                  alt="Team building technology" 
-                  className="rounded-2xl shadow-lg"
-                />
-              </div>
-            </div>
+          
+          {/* Mission */}
+          <div className="bg-white rounded-2xl shadow-card p-8 mb-8">
+            <h2 className="text-2xl font-bold text-charcoal mb-6 flex items-center">
+              <Award className="text-primary mr-2" /> Our Mission
+            </h2>
+            <p className="text-gray-600 mb-4">
+              At Team Nexium, we believe in the power of community-driven solutions to address everyday challenges faced by citizens. 
+              Our mission is to bridge the gap between citizens and government agencies to create safer, more accessible public 
+              infrastructure for everyone.
+            </p>
+            <p className="text-gray-600 mb-4">
+              We're committed to leveraging technology and public participation to identify, report, and facilitate repairs 
+              of potholes and road hazards across India. Through our platform, we aim to create a more engaged citizenry and a 
+              more responsive governance system.
+            </p>
+            <p className="text-gray-600">
+              By working together, we can make a tangible difference in the quality of our roads and the safety of our communities.
+            </p>
           </div>
-        </section>
-        
-        {/* Mission & Vision */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-charcoal mb-4">Our Mission & Vision</h2>
-              <p className="text-gray-600 max-w-3xl mx-auto">
-                We believe in the power of community action to create visible, lasting change.
+          
+          {/* Values */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+            <div className="bg-white rounded-xl shadow-card p-6 text-center">
+              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Heart className="text-primary h-5 w-5" />
+              </div>
+              <h3 className="text-xl font-bold text-charcoal mb-2">Community First</h3>
+              <p className="text-gray-600">
+                We prioritize the needs of citizens and communities in everything we do.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-primary/5 rounded-2xl p-8 border border-primary/20">
-                <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mb-4">
-                  <Globe size={28} className="text-primary" />
-                </div>
-                <h3 className="text-2xl font-bold text-charcoal mb-3">Our Mission</h3>
-                <p className="text-gray-600">
-                  To create safer roads by empowering citizens to report, track, and advocate for the repair of dangerous potholes and road conditions in their communities, while strengthening the bond between citizens and government.
-                </p>
-                <ul className="mt-4 space-y-2">
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span className="text-gray-600">Make reporting road issues simple and rewarding</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span className="text-gray-600">Foster community engagement through gamification</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-primary mt-1">✓</span>
-                    <span className="text-gray-600">Create accountability through data and transparency</span>
-                  </li>
-                </ul>
+            <div className="bg-white rounded-xl shadow-card p-6 text-center">
+              <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="text-secondary h-5 w-5" />
               </div>
-              
-              <div className="bg-accent/5 rounded-2xl p-8 border border-accent/20">
-                <div className="w-14 h-14 bg-accent/20 rounded-full flex items-center justify-center mb-4">
-                  <Award size={28} className="text-accent" />
-                </div>
-                <h3 className="text-2xl font-bold text-charcoal mb-3">Our Vision</h3>
-                <p className="text-gray-600">
-                  A world where community-powered technology bridges the gap between citizens and governments, resulting in safer, better-maintained infrastructure for all.
-                </p>
-                <ul className="mt-4 space-y-2">
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-1">✓</span>
-                    <span className="text-gray-600">Zero preventable accidents caused by poor road conditions</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-1">✓</span>
-                    <span className="text-gray-600">Active community participation in local infrastructure maintenance</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-accent mt-1">✓</span>
-                    <span className="text-gray-600">A model for civic engagement that can be applied to other issues</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-        
-        {/* Team Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-charcoal mb-4">Meet Team Nexium</h2>
-              <p className="text-gray-600 max-w-3xl mx-auto">
-                We're a dedicated group working towards the betterment of our country by binding citizens and government together.
+              <h3 className="text-xl font-bold text-charcoal mb-2">Quality & Safety</h3>
+              <p className="text-gray-600">
+                We're committed to promoting better infrastructure and safer roads for all.
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {teamMembers.map((member, index) => (
-                <div key={index} className="bg-white rounded-2xl shadow-card p-6 text-center">
-                  <div className="mb-4 mx-auto w-24 h-24 rounded-full overflow-hidden border-4 border-primary/10 flex items-center justify-center bg-gray-100">
-                    <span className="text-4xl">{member.name.charAt(0)}</span>
+            <div className="bg-white rounded-xl shadow-card p-6 text-center">
+              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="text-accent h-5 w-5" />
+              </div>
+              <h3 className="text-xl font-bold text-charcoal mb-2">Innovation</h3>
+              <p className="text-gray-600">
+                We continuously seek new technologies and approaches to solve infrastructure challenges.
+              </p>
+            </div>
+          </div>
+          
+          {/* Team */}
+          <div className="bg-white rounded-2xl shadow-card p-8 mb-12">
+            <h2 className="text-2xl font-bold text-charcoal mb-6">Meet Our Team</h2>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {teamMembers.map((member) => (
+                <div key={member.id} className="text-center">
+                  <div className="mb-4 mx-auto w-32 h-32 overflow-hidden rounded-full">
+                    <img
+                      src={member.avatar}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold text-charcoal mb-1">{member.name}</h3>
-                  <p className="text-primary font-medium mb-3">{member.role}</p>
-                  <p className="text-gray-600 text-sm">{member.description}</p>
+                  <h3 className="text-lg font-bold text-charcoal">{member.name}</h3>
+                  <p className="text-primary font-medium mb-2">{member.role}</p>
+                  <p className="text-sm text-gray-600">{member.bio}</p>
                 </div>
               ))}
             </div>
           </div>
-        </section>
-        
-        {/* Join Us Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary to-primary-dark text-white">
-          <div className="max-w-5xl mx-auto text-center">
-            <div className="mb-6 flex justify-center">
-              <Users size={48} className="text-white" />
-            </div>
-            <h2 className="text-3xl font-bold mb-4">Join Our Community</h2>
-            <p className="text-xl font-light mb-8 max-w-3xl mx-auto">
-              Connect with fellow road safety advocates and stay updated on the latest news and features.
+          
+          {/* Join Us Section */}
+          <div className="bg-gradient-to-r from-primary to-primary-light rounded-2xl shadow-card p-8 text-white text-center">
+            <h2 className="text-2xl font-bold mb-4">Join Us in Making a Difference</h2>
+            <p className="mb-6 max-w-2xl mx-auto">
+              Together, we can create safer roads and stronger communities across India. 
+              Join Team Nexium's mission by reporting potholes, verifying reports, or contributing to our cause.
             </p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              <a href="#" className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-colors">
-                <div className="flex justify-center mb-4">
-                  <MessageCircle size={32} className="text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Discord</h3>
-                <p className="text-white/90 text-sm">
-                  Join our active Discord community to chat with other members and get help.
-                </p>
-              </a>
-              
-              <a href="#" className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-colors">
-                <div className="flex justify-center mb-4">
-                  <Smartphone size={32} className="text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Telegram</h3>
-                <p className="text-white/90 text-sm">
-                  Subscribe to our Telegram channel for announcements and updates.
-                </p>
-              </a>
-              
-              <a href="#" className="bg-white/10 backdrop-blur-sm rounded-xl p-6 hover:bg-white/20 transition-colors">
-                <div className="flex justify-center mb-4">
-                  <Mail size={32} className="text-white" />
-                </div>
-                <h3 className="text-xl font-bold mb-2">Newsletter</h3>
-                <p className="text-white/90 text-sm">
-                  Get monthly updates on our progress and new features via email.
-                </p>
-              </a>
+            <div className="flex flex-wrap justify-center gap-4">
+              <a href="/report" className="btn-accent">Report a Pothole</a>
+              <a href="/donate" className="btn-outline bg-white/10 border-white text-white hover:bg-white hover:text-primary">Support Our Mission</a>
             </div>
           </div>
-        </section>
-        
-        {/* Support Us Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="mb-6 flex justify-center">
-              <Heart size={48} className="text-alert" />
-            </div>
-            <h2 className="text-3xl font-bold text-charcoal mb-4">Support Our Mission</h2>
-            <p className="text-gray-600 mb-8">
-              PatchItUp is a non-profit initiative. Your donations help us maintain our servers, develop new features, 
-              and expand our impact to more communities.
-            </p>
-            <a href="/donate" className="btn-primary inline-flex items-center gap-2">
-              <Heart size={18} className="text-white" />
-              Donate Now
-            </a>
-          </div>
-        </section>
+        </div>
       </main>
       
       <Footer />

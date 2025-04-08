@@ -4,6 +4,7 @@ import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
 import PotholeCard from '@/components/UI/PotholeCard';
 import { dummyPotholes } from '@/lib/dummyData';
+import { additionalDummyPotholes } from '@/lib/additionalDummyData';
 import { CheckCircle, X, Info, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Pothole } from '@/lib/types';
@@ -18,11 +19,18 @@ const Verify: React.FC = () => {
   useEffect(() => {
     // Get all potholes with status "reported"
     const reported = dummyPotholes.filter(p => p.status === 'reported');
+    
+    // Add the additional demo potholes
+    const combined = [...reported, ...additionalDummyPotholes];
+    
     // Also add any user-submitted reports from localStorage
     const userSubmittedReports = JSON.parse(localStorage.getItem('potholeReports') || '[]');
-    const combined = [...reported, ...userSubmittedReports.filter((p: Pothole) => p.status === 'reported')];
+    const allReports = [...combined, ...userSubmittedReports.filter((p: Pothole) => p.status === 'reported')];
     
-    setReportedPotholes(combined);
+    // Shuffle the array for a more natural experience
+    const shuffled = allReports.sort(() => 0.5 - Math.random());
+    
+    setReportedPotholes(shuffled);
   }, []);
 
   const handleSwipeLeft = () => {

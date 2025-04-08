@@ -1,15 +1,16 @@
-
 export interface User {
   id: string;
   name: string;
   avatar: string;
-  xp: number;
   level: number;
+  xp: number;
+  joinedDate: string;
   badges: Badge[];
   reportsCount: number;
   verificationsCount: number;
   fixesCount: number;
-  joinedDate: string;
+  bio?: string;
+  location?: string;
 }
 
 export interface Badge {

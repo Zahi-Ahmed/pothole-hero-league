@@ -1,0 +1,105 @@
+
+import { Pothole } from '@/lib/types';
+
+export const additionalDummyPotholes: Pothole[] = [
+  {
+    id: 'p-additional-1',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Pothole_on_Cunningham_Road%2C_Bangalore.jpg/2560px-Pothole_on_Cunningham_Road%2C_Bangalore.jpg',
+    location: {
+      address: 'M.G. Road, New Delhi',
+      lat: 28.6139,
+      lng: 77.2090,
+    },
+    description: 'Large pothole in the middle of the road, causing traffic issues during rush hour.',
+    severity: 'high',
+    status: 'reported',
+    reportedBy: {
+      userId: 'user-123',
+      name: 'Rajesh Kumar',
+    },
+    reportedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: 'p-additional-2',
+    image: 'https://cdn.pixabay.com/photo/2017/03/18/16/33/hole-2154254_1280.jpg',
+    location: {
+      address: 'Connaught Place, New Delhi',
+      lat: 28.6329,
+      lng: 77.2195,
+    },
+    description: 'Medium-sized pothole near pedestrian crossing, presenting danger to pedestrians.',
+    severity: 'medium',
+    status: 'reported',
+    reportedBy: {
+      userId: 'user-456',
+      name: 'Priya Sharma',
+    },
+    reportedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: 'p-additional-3',
+    image: 'https://live.staticflickr.com/8334/8115387208_56b7a613f8_b.jpg',
+    location: {
+      address: 'Chandni Chowk, Old Delhi',
+      lat: 28.6506,
+      lng: 77.2303,
+    },
+    description: 'Multiple potholes in sequence, creating a dangerous situation for two-wheelers.',
+    severity: 'high',
+    status: 'reported',
+    reportedBy: {
+      userId: 'user-789',
+      name: 'Anand Singh',
+    },
+    reportedDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: 'p-additional-4',
+    image: 'https://live.staticflickr.com/65535/50061708167_f5f83f5731_b.jpg',
+    location: {
+      address: 'Defence Colony, New Delhi',
+      lat: 28.5708,
+      lng: 77.2263,
+    },
+    description: 'Small but deep pothole causing damage to car suspensions.',
+    severity: 'medium',
+    status: 'reported',
+    reportedBy: {
+      userId: 'user-101',
+      name: 'Anil Verma',
+    },
+    reportedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+  {
+    id: 'p-additional-5',
+    image: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Pothole_in_Beaufort%2C_SC.JPG',
+    location: {
+      address: 'Hauz Khas, New Delhi',
+      lat: 28.5494,
+      lng: 77.2001,
+    },
+    description: 'Pothole forming at the edge of a recently repaired section, indicating poor quality repair.',
+    severity: 'low',
+    status: 'reported',
+    reportedBy: {
+      userId: 'user-202',
+      name: 'Meera Patel',
+    },
+    reportedDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    verifiedCount: 0,
+    rejectedCount: 0,
+    comments: [],
+  },
+];

@@ -8,12 +8,14 @@ import { useToast } from '@/hooks/use-toast';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Pothole } from '@/lib/types';
+import { extractLocationFromImage, readImageAsDataURL } from '@/lib/imageUtils';
 
 const ReportPothole: React.FC = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [image, setImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [location, setLocation] = useState({
     address: '',
     lat: 0,
@@ -21,36 +23,99 @@ const ReportPothole: React.FC = () => {
   });
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState<'low' | 'medium' | 'high'>('medium');
+  const [isLocationLoading, setIsLocationLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setImage(event.target?.result as string);
-      };
-      reader.readAsDataURL(e.target.files[0]);
+      const file = e.target.files[0];
+      setImageFile(file);
+      
+      try {
+        // Read and display the image
+        const dataUrl = await readImageAsDataURL(file);
+        setImage(dataUrl);
+        
+        // Show loading state for location detection
+        setIsLocationLoading(true);
+        toast({
+          title: "Processing image",
+          description: "Detecting location from image metadata...",
+        });
+        
+        // Try to extract location from image metadata
+        const locationData = await extractLocationFromImage(file);
+        
+        if (locationData) {
+          setLocation(locationData);
+          toast({
+            title: "Location detected",
+            description: "Location metadata extracted from image.",
+          });
+        } else {
+          toast({
+            title: "Location detection failed",
+            description: "Couldn't extract location from image. Please enter manually.",
+            variant: "destructive",
+          });
+        }
+        
+        setIsLocationLoading(false);
+      } catch (error) {
+        console.error("Error processing image:", error);
+        toast({
+          title: "Error processing image",
+          description: "Failed to process the image. Please try again.",
+          variant: "destructive",
+        });
+        setIsLocationLoading(false);
+      }
     }
   };
 
   const getLocationClick = () => {
-    setIsSubmitting(true);
-    
-    // Simulate fetching location
-    setTimeout(() => {
-      setLocation({
-        address: 'Detected Address, New Delhi, India',
-        lat: 28.6139,
-        lng: 77.2090,
-      });
-      
-      setIsSubmitting(false);
-      
+    if (!navigator.geolocation) {
       toast({
-        title: "Location detected",
-        description: "We've found your current location.",
+        title: "Geolocation unavailable",
+        description: "Your browser doesn't support geolocation.",
+        variant: "destructive",
       });
-    }, 1000);
+      return;
+    }
+    
+    setIsLocationLoading(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        
+        // Simulate reverse geocoding (in a real app, you would use a service like Google Maps API)
+        setTimeout(() => {
+          setLocation({
+            address: "Detected Current Location, New Delhi, India",
+            lat: latitude,
+            lng: longitude,
+          });
+          
+          setIsLocationLoading(false);
+          
+          toast({
+            title: "Location detected",
+            description: "We've found your current location.",
+          });
+        }, 1000);
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        setIsLocationLoading(false);
+        
+        toast({
+          title: "Location detection failed",
+          description: "Couldn't detect your location. Please enter manually.",
+          variant: "destructive",
+        });
+      }
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -108,6 +173,7 @@ const ReportPothole: React.FC = () => {
   const resetForm = () => {
     setIsSuccess(false);
     setImage(null);
+    setImageFile(null);
     setLocation({
       address: '',
       lat: 0,
@@ -173,7 +239,15 @@ const ReportPothole: React.FC = () => {
                     <img src={image} alt="Pothole preview" className="w-full h-64 object-cover" />
                     <button
                       type="button"
-                      onClick={() => setImage(null)}
+                      onClick={() => {
+                        setImage(null);
+                        setImageFile(null);
+                        setLocation({
+                          address: '',
+                          lat: 0,
+                          lng: 0,
+                        });
+                      }}
                       className="absolute top-3 right-3 bg-charcoal/70 text-white p-2 rounded-full hover:bg-charcoal transition-colors"
                     >
                       ✖
@@ -201,7 +275,8 @@ const ReportPothole: React.FC = () => {
                 )}
                 
                 <p className="text-sm text-gray-500">
-                  Please upload a clear photo of the pothole. This helps verify the report quickly.
+                  Please upload a clear photo of the pothole. This helps verify the report quickly and 
+                  we'll try to detect the location from the image metadata.
                 </p>
               </div>
               
@@ -214,10 +289,21 @@ const ReportPothole: React.FC = () => {
                 <div className="flex items-center gap-3 mb-4">
                   <button
                     type="button"
-                    className="btn-secondary py-2 px-4"
+                    className={`btn-secondary py-2 px-4 ${isLocationLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                     onClick={getLocationClick}
+                    disabled={isLocationLoading}
                   >
-                    Auto-detect Location
+                    {isLocationLoading ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Detecting...
+                      </>
+                    ) : (
+                      "Auto-detect Location"
+                    )}
                   </button>
                   <span className="text-sm text-gray-500">or enter manually</span>
                 </div>
@@ -293,7 +379,7 @@ const ReportPothole: React.FC = () => {
                           className="sr-only"
                         />
                         <span className="text-2xl mb-1">
-                          {level === 'low' ? '🟢' : level === 'medium' ? '����' : '🔴'}
+                          {level === 'low' ? '🟢' : level === 'medium' ? '🟠' : '🔴'}
                         </span>
                         <span className="font-medium capitalize">{level}</span>
                         <span className="text-xs text-gray-500 text-center mt-1">
