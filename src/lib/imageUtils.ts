@@ -13,7 +13,7 @@ export const extractLocationFromImage = async (file: File): Promise<{address: st
   try {
     console.log("Attempting to extract location from image:", file.name);
     
-    // First try to read EXIF data using the exif-parser approach
+    // First try to read EXIF data using exif-js approach
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
     
@@ -24,8 +24,8 @@ export const extractLocationFromImage = async (file: File): Promise<{address: st
       // Got location from EXIF
       console.log("Successfully extracted location from image EXIF data:", exifData);
       
-      // Attempt to get address from coordinates using a simulated reverse geocoding
-      const address = await simulateReverseGeocode(exifData.lat, exifData.lng);
+      // Attempt to get address from coordinates
+      const address = await reverseGeocode(exifData.lat, exifData.lng);
       
       return {
         address,
@@ -39,51 +39,137 @@ export const extractLocationFromImage = async (file: File): Promise<{address: st
       const geoLocation = await getCurrentLocation();
       if (geoLocation) {
         console.log("Successfully obtained browser geolocation:", geoLocation);
-        toast.success("Using your current location as fallback");
+        toast.success("Using your current location");
         return geoLocation;
       } else {
-        console.log("Geolocation API failed, using simulated location data");
-        
-        // Last resort - use simulated data
-        toast.info("Using approximate location (unable to detect exact location)");
-        return simulateLocationData();
+        console.log("Geolocation API failed or denied");
+        toast.error("Could not detect location. Please enter manually.");
+        return null;
       }
     }
   } catch (error) {
     console.error("Error extracting location from image:", error);
-    toast.error("Could not extract location from image. Using fallback method.");
-    
-    // Fallback to a simulated location as last resort
-    return simulateLocationData();
+    toast.error("Could not extract location from image. Please enter manually.");
+    return null;
   }
 };
 
 /**
- * Extract EXIF data from image buffer
- * This is a simplified implementation that now actually attempts to 
- * extract real EXIF data from JPEG files
+ * Extracts actual EXIF data from image buffer
+ * Looks for real GPS coordinates in the EXIF metadata
  */
 const extractExifData = async (buffer: Uint8Array): Promise<{lat: number, lng: number} | null> => {
+  // Helper function to convert GPS coordinates from EXIF format to decimal
+  const convertDMSToDD = (degrees: number, minutes: number, seconds: number, direction: string): number => {
+    let dd = degrees + minutes / 60 + seconds / 3600;
+    if (direction === 'S' || direction === 'W') {
+      dd = -dd;
+    }
+    return dd;
+  };
+
   try {
-    // Look for the EXIF marker in JPEG files (0xFF, 0xE1)
-    // This is a very simplified implementation - in production you'd use a proper EXIF library
-    for (let i = 0; i < buffer.length - 1; i++) {
-      if (buffer[i] === 0xFF && buffer[i + 1] === 0xE1) {
-        console.log("Found EXIF marker at position", i);
+    // Check if it's a JPEG (starts with FF D8)
+    if (buffer[0] !== 0xFF || buffer[1] !== 0xD8) {
+      console.log("Not a JPEG file, can't extract EXIF");
+      return null;
+    }
+
+    // Look for EXIF marker (FF E1)
+    let offset = 2;
+    while (offset < buffer.length - 1) {
+      if (buffer[offset] === 0xFF && buffer[offset + 1] === 0xE1) {
+        // Found EXIF marker
+        const exifOffset = offset + 4; // Skip marker and length
         
-        // In a real implementation, you'd parse the EXIF data properly
-        // For demo purposes, we'll return a realistic GPS coordinate
-        
-        // Delhi area coordinates with slight randomization
-        const lat = 28.6139 + (Math.random() * 0.1 - 0.05);
-        const lng = 77.2090 + (Math.random() * 0.1 - 0.05);
-        
-        console.log("Extracted GPS coordinates:", lat, lng);
-        return { lat, lng };
+        // Check for "Exif" string
+        if (buffer[exifOffset] === 0x45 && // E
+            buffer[exifOffset + 1] === 0x78 && // x
+            buffer[exifOffset + 2] === 0x69 && // i
+            buffer[exifOffset + 3] === 0x66) { // f
+          
+          // Found EXIF data, now look for GPS IFD
+          // This is a simplified approach - a real implementation would need to parse the TIFF structure
+
+          // Search for GPS related data - Look for typical GPS tag markers
+          // Since this is simplified, we'll just check for patterns that might indicate GPS data
+
+          // Convert buffer to string for easier searching
+          const dataView = new DataView(buffer.buffer);
+          
+          // Scan for latitude and longitude references (North/South, East/West)
+          let latRef = null;
+          let lngRef = null;
+          let latValue = null;
+          let lngValue = null;
+          
+          // This is a very simplified detection approach
+          // In a real implementation, you would properly parse the TIFF/EXIF structure
+          for (let i = exifOffset; i < Math.min(exifOffset + 5000, buffer.length - 10); i++) {
+            // Check for "N" or "S" for latitude ref
+            if (buffer[i] === 0x4E || buffer[i] === 0x53) { // N or S
+              if (i+1 < buffer.length && buffer[i+1] === 0x00) { // Null terminator
+                latRef = String.fromCharCode(buffer[i]);
+                console.log("Found latitude reference:", latRef);
+              }
+            }
+            
+            // Check for "E" or "W" for longitude ref
+            if (buffer[i] === 0x45 || buffer[i] === 0x57) { // E or W
+              if (i+1 < buffer.length && buffer[i+1] === 0x00) { // Null terminator
+                lngRef = String.fromCharCode(buffer[i]);
+                console.log("Found longitude reference:", lngRef);
+              }
+            }
+            
+            // Very rudimentary check for rational values that might be coordinates
+            // In real GPS data, these would be properly structured
+            if (i+8 < buffer.length) {
+              // If we find what might be a rational number (2 32-bit values)
+              const val1 = dataView.getUint32(i, false); // Big endian
+              const val2 = dataView.getUint32(i+4, false);
+              
+              // If values look like they could be part of coordinates
+              // (checking for reasonable ranges for degrees)
+              if (val1 > 0 && val1 < 180 && val2 > 0) {
+                // Store potential lat/lng values
+                if (!latValue && latRef) {
+                  latValue = val1 / val2;
+                  console.log("Potential latitude value:", latValue);
+                } else if (!lngValue && lngRef) {
+                  lngValue = val1 / val2;
+                  console.log("Potential longitude value:", lngValue);
+                }
+              }
+            }
+            
+            // If we found both latitude and longitude, break early
+            if (latRef && lngRef && latValue !== null && lngValue !== null) {
+              break;
+            }
+          }
+          
+          // If we found GPS coordinates, return them
+          if (latRef && lngRef && latValue !== null && lngValue !== null) {
+            console.log("Extracted GPS coordinates from EXIF:", latValue, latRef, lngValue, lngRef);
+            return {
+              lat: latRef === 'N' ? latValue : -latValue,
+              lng: lngRef === 'E' ? lngValue : -lngValue
+            };
+          }
+        }
+      }
+      
+      // Move to next marker
+      if (buffer[offset] === 0xFF && buffer[offset + 1] !== 0x00) {
+        const length = (buffer[offset + 2] << 8) + buffer[offset + 3];
+        offset += 2 + length;
+      } else {
+        offset += 1;
       }
     }
     
-    console.log("No EXIF marker found in image");
+    console.log("No GPS data found in EXIF");
     return null;
   } catch (error) {
     console.error("Error parsing EXIF data:", error);
@@ -93,7 +179,6 @@ const extractExifData = async (buffer: Uint8Array): Promise<{lat: number, lng: n
 
 /**
  * Get current location using browser's geolocation API
- * Enhanced with more robust error handling and clear feedback
  */
 const getCurrentLocation = (): Promise<{address: string, lat: number, lng: number} | null> => {
   return new Promise((resolve) => {
@@ -109,19 +194,19 @@ const getCurrentLocation = (): Promise<{address: string, lat: number, lng: numbe
     }, 8000); // 8 second timeout
     
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         clearTimeout(timeoutId);
         
         const { latitude, longitude } = position.coords;
         console.log("Browser geolocation successful:", latitude, longitude);
         
-        // Simulate reverse geocoding
-        simulateReverseGeocode(latitude, longitude).then(address => {
-          resolve({
-            address,
-            lat: latitude,
-            lng: longitude
-          });
+        // Get address from coordinates
+        const address = await reverseGeocode(latitude, longitude);
+        
+        resolve({
+          address,
+          lat: latitude,
+          lng: longitude
         });
       },
       (error) => {
@@ -139,63 +224,41 @@ const getCurrentLocation = (): Promise<{address: string, lat: number, lng: numbe
 };
 
 /**
- * Simulate reverse geocoding (address lookup from coordinates)
- * Provides more realistic and varied addresses based on the coordinates
+ * Reverse geocode coordinates to get address
+ * Uses Nominatim OpenStreetMap API for geocoding
  */
-const simulateReverseGeocode = async (lat: number, lng: number): Promise<string> => {
-  // In a real app, this would call a geocoding service API
-  // For demonstration, generate a realistic address
-  
-  // Set of realistic street names for New Delhi
-  const streets = [
-    'Rajpath', 'Connaught Place', 'Lodhi Road', 'Janpath', 'Akbar Road',
-    'Dwarka Sector', 'Nehru Place', 'Vasant Kunj', 'Greater Kailash', 'Chandni Chowk',
-    'Karol Bagh', 'Saket', 'Hauz Khas', 'Lajpat Nagar', 'Defence Colony'
-  ];
-  
-  // Adjust coordinates slightly to simulate different addresses
-  const adjustedLat = lat + (Math.random() * 0.001 - 0.0005);
-  const adjustedLng = lng + (Math.random() * 0.001 - 0.0005);
-  
-  // Select a street based on the coordinates
-  const streetIndex = Math.floor((adjustedLat * adjustedLng * 10000) % streets.length);
-  const street = streets[streetIndex];
-  
-  // Generate a house number
-  const houseNumber = Math.floor(Math.random() * 200 + 1);
-  
-  // Build the address string
-  return `${houseNumber} ${street}, New Delhi, India (${adjustedLat.toFixed(6)}, ${adjustedLng.toFixed(6)})`;
-};
-
-/**
- * Provide a simulated location as fallback
- * Always ensures we have a location even if all other methods fail
- */
-const simulateLocationData = (): {address: string, lat: number, lng: number} => {
-  // Random coordinates in New Delhi area
-  const lat = 28.6139 + (Math.random() * 0.05 - 0.025);
-  const lng = 77.2090 + (Math.random() * 0.05 - 0.025);
-  
-  // Generate a fake address based on the coordinates
-  const streets = [
-    'Rajpath', 'Connaught Place', 'Lodhi Road', 'Janpath', 'Akbar Road',
-    'Parliament Street', 'India Gate Circle', 'Khan Market', 'Sarojini Nagar', 'Chanakyapuri'
-  ];
-  
-  const streetIndex = Math.floor(Math.random() * streets.length);
-  const street = streets[streetIndex];
-  const houseNumber = Math.floor(Math.random() * 100 + 1);
-  
-  const address = `${houseNumber} ${street}, New Delhi, India`;
-  
-  console.log("Using simulated location data:", { address, lat, lng });
-  
-  return {
-    address,
-    lat,
-    lng
-  };
+const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
+  try {
+    console.log("Reverse geocoding coordinates:", lat, lng);
+    
+    // Using OpenStreetMap's Nominatim service which is free and doesn't require API key
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
+      {
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'PotholeReporter/1.0' // Required by Nominatim ToS
+        }
+      }
+    );
+    
+    if (!response.ok) {
+      throw new Error(`Geocoding API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log("Geocoding response:", data);
+    
+    if (data && data.display_name) {
+      return data.display_name;
+    } else {
+      throw new Error("No address found in geocoding response");
+    }
+  } catch (error) {
+    console.error("Error in reverse geocoding:", error);
+    // Fall back to coordinates as the address
+    return `Location at coordinates: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  }
 };
 
 /**

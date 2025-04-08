@@ -1,17 +1,15 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Layout/Navbar';
 import Footer from '@/components/Layout/Footer';
-import { Camera, MapPin, Info, Send, CheckCircle } from 'lucide-react';
+import { Camera, MapPin, Info, Send, CheckCircle, AlertTriangle } from 'lucide-react';
 import CustomBadge from '@/components/UI/CustomBadge';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from "sonner";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { Pothole } from '@/lib/types';
 import { extractLocationFromImage, readImageAsDataURL } from '@/lib/imageUtils';
 
 const ReportPothole: React.FC = () => {
-  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [image, setImage] = useState<string | null>(null);
@@ -24,12 +22,14 @@ const ReportPothole: React.FC = () => {
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState<'low' | 'medium' | 'high'>('medium');
   const [isLocationLoading, setIsLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setImageFile(file);
+      setLocationError(null);
       
       try {
         // Read and display the image
@@ -38,84 +38,82 @@ const ReportPothole: React.FC = () => {
         
         // Show loading state for location detection
         setIsLocationLoading(true);
-        toast({
-          title: "Processing image",
-          description: "Detecting location from image metadata...",
-        });
+        toast.info("Processing image and attempting to detect location...");
         
         // Try to extract location from image metadata
         const locationData = await extractLocationFromImage(file);
         
         if (locationData) {
           setLocation(locationData);
-          toast({
-            title: "Location detected",
-            description: "Location metadata extracted from image.",
-          });
+          toast.success("Location detected from image or current position");
+          setLocationError(null);
         } else {
-          toast({
-            title: "Location detection failed",
-            description: "Couldn't extract location from image. Please enter manually.",
-            variant: "destructive",
-          });
+          setLocationError("Couldn't detect location automatically. Please enter manually or try again.");
+          toast.error("Location detection failed. Please enter manually.");
         }
-        
-        setIsLocationLoading(false);
       } catch (error) {
         console.error("Error processing image:", error);
-        toast({
-          title: "Error processing image",
-          description: "Failed to process the image. Please try again.",
-          variant: "destructive",
-        });
+        setLocationError("Error processing image. Please try again or enter location manually.");
+        toast.error("Error processing image. Please try again.");
+      } finally {
         setIsLocationLoading(false);
       }
     }
   };
 
-  const getLocationClick = () => {
+  const getLocationClick = async () => {
     if (!navigator.geolocation) {
-      toast({
-        title: "Geolocation unavailable",
-        description: "Your browser doesn't support geolocation.",
-        variant: "destructive",
-      });
+      toast.error("Your browser doesn't support geolocation.");
+      setLocationError("Geolocation not supported by your browser. Please enter location manually.");
       return;
     }
     
     setIsLocationLoading(true);
+    setLocationError(null);
+    toast.info("Detecting your current location...");
     
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        
-        // Simulate reverse geocoding (in a real app, you would use a service like Google Maps API)
-        setTimeout(() => {
-          setLocation({
-            address: "Detected Current Location, New Delhi, India",
-            lat: latitude,
-            lng: longitude,
-          });
-          
-          setIsLocationLoading(false);
-          
-          toast({
-            title: "Location detected",
-            description: "We've found your current location.",
-          });
-        }, 1000);
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-        setIsLocationLoading(false);
-        
-        toast({
-          title: "Location detection failed",
-          description: "Couldn't detect your location. Please enter manually.",
-          variant: "destructive",
+    try {
+      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
         });
+      });
+      
+      const { latitude, longitude } = position.coords;
+      
+      // Reverse geocode to get the address
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'PotholeReporter/1.0'
+          }
+        }
+      );
+      
+      if (!response.ok) {
+        throw new Error("Geocoding API error");
       }
-    );
+      
+      const data = await response.json();
+      
+      setLocation({
+        address: data.display_name || `Location at ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+        lat: latitude,
+        lng: longitude,
+      });
+      
+      toast.success("Current location detected successfully");
+    } catch (error) {
+      console.error("Geolocation error:", error);
+      setLocationError("Failed to detect your location. Please enable location services or enter manually.");
+      toast.error("Location detection failed. Please try again or enter manually.");
+    } finally {
+      setIsLocationLoading(false);
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -156,11 +154,7 @@ const ReportPothole: React.FC = () => {
       setIsSubmitting(false);
       setIsSuccess(true);
       
-      toast({
-        title: "Report submitted successfully!",
-        description: "Thank you for making our roads safer.",
-        variant: "default",
-      });
+      toast.success("Report submitted successfully! Thank you for making our roads safer.");
       
       const xpElement = document.getElementById('xp-gain');
       if (xpElement) {
@@ -181,6 +175,7 @@ const ReportPothole: React.FC = () => {
     });
     setDescription('');
     setSeverity('medium');
+    setLocationError(null);
   };
 
   const navigateToProgress = () => {
@@ -247,6 +242,7 @@ const ReportPothole: React.FC = () => {
                           lat: 0,
                           lng: 0,
                         });
+                        setLocationError(null);
                       }}
                       className="absolute top-3 right-3 bg-charcoal/70 text-white p-2 rounded-full hover:bg-charcoal transition-colors"
                     >
@@ -308,6 +304,13 @@ const ReportPothole: React.FC = () => {
                   <span className="text-sm text-gray-500">or enter manually</span>
                 </div>
                 
+                {locationError && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-lg flex items-start gap-2">
+                    <AlertTriangle size={18} className="text-red-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-red-700">{locationError}</p>
+                  </div>
+                )}
+                
                 {location.address && (
                   <div className="bg-gray-50 p-3 rounded-lg mb-4">
                     <p className="font-medium">{location.address}</p>
@@ -330,6 +333,39 @@ const ReportPothole: React.FC = () => {
                     placeholder="Enter the exact location of the pothole"
                     required
                   />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="latitude" className="block text-sm font-medium text-gray-700 mb-1">
+                      Latitude
+                    </label>
+                    <input
+                      type="number"
+                      id="latitude"
+                      value={location.lat || ''}
+                      onChange={(e) => setLocation({ ...location, lat: parseFloat(e.target.value) || 0 })}
+                      step="0.000001"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                      placeholder="Latitude (e.g. 28.6139)"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="longitude" className="block text-sm font-medium text-gray-700 mb-1">
+                      Longitude
+                    </label>
+                    <input
+                      type="number"
+                      id="longitude"
+                      value={location.lng || ''}
+                      onChange={(e) => setLocation({ ...location, lng: parseFloat(e.target.value) || 0 })}
+                      step="0.000001"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                      placeholder="Longitude (e.g. 77.2090)"
+                      required
+                    />
+                  </div>
                 </div>
               </div>
               
